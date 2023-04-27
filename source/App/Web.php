@@ -24,28 +24,10 @@ class Web
     public function home() : void
     {
 
-        echo $this->view->render("home",["categories" => $this->categories]);
+        echo $this->view->render("register");
     }
 
-    public function products(?array $data) : void
-    {
-        if(!empty($data)){
-            $product = new Products();
-            $products = $product->findByCategory($data["idCategory"]);
-        }
-        echo $this->view->render(
-            "products",[
-                "categories" => $this->categories,
-                "products" => $products
-            ]
-        );
-    }
-
-    public function about()
-    {
-        echo $this->view->render("about", ["categories" => $this->categories]); // Engine
-    }
-
+   
 
 
    public function register(?array $data) : void
@@ -107,8 +89,7 @@ class Web
         }
 
         echo $this->view->render("register",[
-            "eventName" => CONF_SITE_NAME,
-            "categories" => $this->categories
+            "eventName" => CONF_SITE_NAME
         ]);
     }
 
@@ -156,82 +137,9 @@ class Web
             return;
         }
 
-        echo $this->view->render("register",[
-        "eventName" => CONF_SITE_NAME,
-        "categories" => $this->categories]
+        echo $this->view->render("register"
     );
 
-    }
-    
-    public function faqs()
-    {
-        $faq = new Faq();
-        $faqs = $faq->selectAll();
-
-        echo $this->view->render("faqs",[
-            "categories" => $this->categories,
-            "faqs" => $faqs
-        ]);
-    }
-
-
-    public function contact(array $data) : void
-    {
-        if(!empty($data)){
-            if(in_array("",$data)){
-                $json = [
-                    "message1" => "Informe e-mail e mensagem para enviar!",
-                    "type" => "warning"
-                ];
-                echo json_encode($json);
-                return;
-            }
-
-            $contact = new Contact(
-                NULL,
-                $data['name'],
-                $data['email'],
-                $data['message']
-            );
-
-            if(!$contact->insert()){
-                $json = [
-                    "message1" => $contact->getMessage1(),
-                    "type" => "error"
-                ];
-                echo json_encode($json);
-                return;
-            } else {
-                $json = [
-                    "name" => $data["name"],
-                    "email" => $data["email"],
-                    "message" => $data["message"],
-                    "message1" => $contact->getMessage1(),
-                    "type" => "success"
-                ];
-                echo json_encode($json);
-                return;
-            }
-            return;
-
-        }
-
-        
-        //var_dump($data);
-        echo $this->view->render("contact", [
-        "categories" => $this->categories,
-        "eventName" => CONF_SITE_NAME]);
-    }
-
-    public function error(array $data) : void
-    {
-//      echo "<h1>Erro {$data["errcode"]}</h1>";
-//      include __DIR__ . "/../../themes/web/404.php";
-        echo $this->view->render("404", [
-            "title" => "Erro {$data["errcode"]} | " . CONF_SITE_NAME,
-            "error" => $data["errcode"],
-            ["categories" => $this->categories]
-        ]);
     }
 
 }
